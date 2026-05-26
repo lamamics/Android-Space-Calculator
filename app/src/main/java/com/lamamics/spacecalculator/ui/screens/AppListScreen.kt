@@ -65,11 +65,46 @@ fun AppListScreen(
             apps.isEmpty() && !loading -> EmptyState("Aucune donnée.", null, {})
             else -> {
                 val total = apps.sumOf { it.totalBytes }.coerceAtLeast(1)
-                LazyColumn(Modifier.fillMaxSize()) {
-                    items(apps) { app -> AppRow(app, total) }
+                Column(Modifier.fillMaxSize()) {
+                    SummaryHeader(apps)
+                    LazyColumn(Modifier.weight(1f)) {
+                        items(apps) { app -> AppRow(app, total) }
+                    }
                 }
             }
         }
+    }
+}
+
+/** Totals + a note explaining this view covers the treemap's blind spot. */
+@Composable
+private fun SummaryHeader(apps: List<AppInfo>) {
+    val totalApp = apps.sumOf { it.appBytes }
+    val totalData = apps.sumOf { it.dataBytes }
+    val totalCache = apps.sumOf { it.cacheBytes }
+    val total = totalApp + totalData + totalCache
+    Column(
+        Modifier.fillMaxWidth()
+            .background(MaterialTheme.colorScheme.surfaceVariant)
+            .padding(horizontal = 16.dp, vertical = 12.dp),
+    ) {
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+            Text("Total des applications", fontWeight = FontWeight.Bold)
+            Text(formatBytes(total), fontWeight = FontWeight.Bold)
+        }
+        Text(
+            "APK ${formatBytes(totalApp)} · Données ${formatBytes(totalData)} · Cache ${formatBytes(totalCache)}",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(top = 4.dp),
+        )
+        Text(
+            "Inclut les données privées internes (/data/data) que le treemap ne peut pas lire — " +
+                "c'est l'essentiel de la catégorie « Autre »/« Système » du système.",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.outline,
+            modifier = Modifier.padding(top = 6.dp),
+        )
     }
 }
 

@@ -42,4 +42,20 @@ object TreemapColors {
             else -> other
         }
     }
+
+    /** Color → label pairs for the on-screen legend. */
+    val legend: List<Pair<Color, String>> = listOf(
+        FOLDER to "Dossier",
+        videos to "Vidéo",
+        images to "Image",
+        audio to "Audio",
+        docs to "Document",
+        archives to "Archive",
+        apk to "App (APK/OBB)",
+        APP_FILE to "Données/cache d'app",
+        other to "Autre fichier",
+        FREE to "Espace libre",
+        RESIDUAL to "Petits fichiers",
+        UNREADABLE to "Non lisible",
+    )
 }

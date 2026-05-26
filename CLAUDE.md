@@ -79,7 +79,10 @@ Concepts importants déjà résolus :
 - **Bandes de dossiers = nom SEUL** (pas la taille) : éviter la confusion d'addition hiérarchique (un dossier inclut déjà ses enfants). Taille dispo dans la fiche + breadcrumb.
 - **Espace libre** : tuile synthétique (`Node.isFree`) à la racine, remplie d'une **trame hachurée** (`drawHatch`) pour ne pas la confondre avec les gris « petits fichiers ».
 - **Bouton « Ouvrir »** (fiche détail) : `util/OpenFile.kt` + `FileProvider` (`res/xml/file_paths.xml`, autorité `${applicationId}.fileprovider`) → ACTION_VIEW via chooser. Ne marche que sur fichiers lisibles par le process app (pas Android/data).
-- **Vue « par application »** : `ui/screens/AppListScreen.kt`, ouverte depuis SetupScreen (bouton) → `MainViewModel.openAppList()`. Liste triée par taille, barre proportionnelle, répartition App/Données/Cache (StorageStatsManager).
+- **Vue « par application »** : `ui/screens/AppListScreen.kt`, ouverte depuis SetupScreen (bouton) → `MainViewModel.openAppList()`. Liste triée par taille, barre proportionnelle, répartition App/Données/Cache (StorageStatsManager). En-tête récap (totaux App/Données/Cache) qui note que ces chiffres incluent `/data/data` — l'angle mort du treemap.
+- **Déploiement systématique des dossiers** : un dossier dessine ses enfants même sans bande de titre (fini les blocs jaunes vides). Seuil titre : ≤15% hauteur, cap 22dp, plancher 10dp.
+- **Couleur app data/cache** : cyan (`APP_FILE`/`APP_FOLDER`) pour tout ce qui est sous `Android/data`|`obb` (regex `APP_DATA_REGEX`), distinct des médias.
+- **Légende couleurs** : `LegendBar` dans TreemapScreen, repliable via l'icône Info de la barre. Source des couleurs+libellés : `TreemapColors.legend`.
 
 ### « Autre » du téléphone
 Pas un dossier : c'est une catégorie Samsung. Son contenu apparaît sous les vrais
@@ -89,9 +92,10 @@ dossiers (`Android/data`, `Android/obb`, miniatures, divers). Une partie vit dan
 ## Reste à faire / idées (Phase 7+)
 - Streaming de progression depuis le user service Shizuku (callback AIDL ; actuellement start/finish seulement).
 - Sérialisation binaire au lieu de JSON pour les très gros arbres (interne 110 Go).
-- Légende des couleurs ; miniature aussi pour les dossiers (plus gros média).
+- Miniature aussi pour les dossiers (plus gros média).
 - Persistance / comparaison de scans, export.
 - Point d'entrée « par application » aussi depuis l'écran treemap (actuellement seulement depuis SetupScreen).
+- À VÉRIFIER sur device (tél était déchargé au moment du dev) : rendu de la légende + en-tête récap app-list + couleur cyan app-data sur un vrai scan.
 
 ## Conventions
 - L'utilisateur (Mathias) travaille en **français**, veut avancer **phase par phase**, et

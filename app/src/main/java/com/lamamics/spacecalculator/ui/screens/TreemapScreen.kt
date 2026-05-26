@@ -6,25 +6,36 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.lamamics.spacecalculator.model.Node
 import com.lamamics.spacecalculator.ui.components.TreemapView
+import com.lamamics.spacecalculator.ui.theme.TreemapColors
 import com.lamamics.spacecalculator.util.formatBytes
 
 @Composable
@@ -37,9 +48,16 @@ fun TreemapScreen(
     onBack: () -> Unit,
     onNewScan: () -> Unit,
 ) {
+    var showLegend by remember { mutableStateOf(false) }
     Column(Modifier.fillMaxSize()) {
-        TopBar(canGoUp = navStack.size > 1, onBack = onBack, onNewScan = onNewScan)
+        TopBar(
+            canGoUp = navStack.size > 1,
+            onBack = onBack,
+            onNewScan = onNewScan,
+            onToggleLegend = { showLegend = !showLegend },
+        )
         Breadcrumb(navStack, onCrumb)
+        if (showLegend) LegendBar()
         Row(
             Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 4.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -66,7 +84,12 @@ fun TreemapScreen(
 }
 
 @Composable
-private fun TopBar(canGoUp: Boolean, onBack: () -> Unit, onNewScan: () -> Unit) {
+private fun TopBar(
+    canGoUp: Boolean,
+    onBack: () -> Unit,
+    onNewScan: () -> Unit,
+    onToggleLegend: () -> Unit,
+) {
     Row(
         Modifier.fillMaxWidth().padding(horizontal = 4.dp, vertical = 2.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -78,12 +101,40 @@ private fun TopBar(canGoUp: Boolean, onBack: () -> Unit, onNewScan: () -> Unit) 
                 contentDescription = if (canGoUp) "Remonter d'un niveau" else "Retour à la configuration",
             )
         }
-        Text(
-            if (canGoUp) "Remonter / retour" else "Retour à la config",
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.outline,
-        )
-        TextButton(onClick = onNewScan) { Text("Nouveau scan") }
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            IconButton(onClick = onToggleLegend) {
+                Icon(Icons.Filled.Info, contentDescription = "Légende des couleurs")
+            }
+            TextButton(onClick = onNewScan) { Text("Nouveau scan") }
+        }
+    }
+}
+
+/** Color legend, toggled from the top bar. */
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun LegendBar() {
+    FlowRow(
+        Modifier
+            .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.surfaceVariant)
+            .padding(horizontal = 12.dp, vertical = 8.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
+        TreemapColors.legend.forEach { (color, label) ->
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Box(
+                    Modifier.size(12.dp)
+                        .clip(RoundedCornerShape(2.dp))
+                        .background(color),
+                )
+                Text(
+                    "  $label",
+                    style = MaterialTheme.typography.bodySmall,
+                )
+            }
+        }
     }
 }
 
