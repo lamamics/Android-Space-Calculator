@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Simple treemap motif on the standard 108dp adaptive canvas (safe zone ~66dp). -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path android:fillColor="#FFFFFF" android:pathData="M30,30 h26 v30 h-26 z" />
+    <path android:fillColor="#FFE082" android:pathData="M58,30 h20 v18 h-20 z" />
+    <path android:fillColor="#EF7C71" android:pathData="M58,50 h20 v10 h-20 z" />
+    <path android:fillColor="#C79BE8" android:pathData="M30,62 h30 v16 h-30 z" />
+    <path android:fillColor="#8FA8FF" android:pathData="M62,62 h16 v16 h-16 z" />
+</vector>

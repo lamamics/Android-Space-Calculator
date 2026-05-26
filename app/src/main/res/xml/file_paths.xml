@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <!-- Personal/sideload tool: expose any absolute path so the detail sheet can
+         hand a readable file to another app via a content:// URI. -->
+    <root-path name="root" path="/" />
+</paths>
