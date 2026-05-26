@@ -66,7 +66,7 @@ fun AppListScreen(
             else -> {
                 val total = apps.sumOf { it.totalBytes }.coerceAtLeast(1)
                 Column(Modifier.fillMaxSize()) {
-                    SummaryHeader(apps)
+                    if (apps.isNotEmpty()) SummaryHeader(apps)
                     LazyColumn(Modifier.weight(1f)) {
                         items(apps) { app -> AppRow(app, total) }
                     }
