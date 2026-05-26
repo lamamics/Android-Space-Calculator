@@ -37,9 +37,9 @@ object NestedTreemap {
      * looks the same on any screen.
      */
     private fun headerHeight(wPx: Float, hPx: Float, density: Float): Float {
-        if (wPx / density < 38f) return 0f                  // too narrow for a name
-        val band = (hPx * 0.12f).coerceAtMost(22f * density)
-        return if (band >= 12f * density) band else 0f      // hide if unreadable
+        if (wPx / density < 32f) return 0f                  // too narrow for a name
+        val band = (hPx * 0.15f).coerceAtMost(22f * density)
+        return if (band >= 10f * density) band else 0f      // hide if unreadable
     }
 
     fun layout(
@@ -67,7 +67,9 @@ object NestedTreemap {
             val header = if (isDir) headerHeight(t.w, t.h, density) else 0f
             out.add(RenderTile(child, t.x, t.y, t.w, t.h, depth, isDir, header))
 
-            if (child != null && isDir && child.children.isNotEmpty() && depth < maxDepth && header > 0f) {
+            // Recurse whenever there's room — even with no title band — so a
+            // folder shows its content instead of rendering as a blank block.
+            if (child != null && isDir && child.children.isNotEmpty() && depth < maxDepth) {
                 val ix = t.x + PAD
                 val iy = t.y + header
                 val iw = t.w - 2 * PAD

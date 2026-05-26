@@ -11,6 +11,12 @@ object TreemapColors {
     val FOLDER = Color(0xFFFFE082)
     val FREE = Color(0xFFE0E0E0)       // free space (neutral light grey, like the system bar)
 
+    // App data / cache (under Android/data or Android/obb) — the bulk of "Other".
+    val APP_FOLDER = Color(0xFF80DEEA) // cyan tint for app data/cache folders
+    val APP_FILE = Color(0xFF26C6DA)   // cyan for app data/cache files
+
+    private val APP_DATA_REGEX = Regex("/Android/(data|obb)(/|$)")
+
     private val images = Color(0xFFEF7C71)
     private val videos = Color(0xFFC79BE8)
     private val audio = Color(0xFF8FA8FF)
@@ -23,7 +29,9 @@ object TreemapColors {
         if (node == null) return RESIDUAL
         if (node.isFree) return FREE
         if (!node.isReadable) return UNREADABLE
-        if (node.isDirectory) return FOLDER
+        val isAppData = APP_DATA_REGEX.containsMatchIn(node.path)
+        if (node.isDirectory) return if (isAppData) APP_FOLDER else FOLDER
+        if (isAppData) return APP_FILE   // app data/cache, regardless of extension
         return when (node.name.substringAfterLast('.', "").lowercase()) {
             "jpg", "jpeg", "png", "gif", "webp", "bmp", "heic", "heif" -> images
             "mp4", "mkv", "avi", "mov", "webm", "3gp", "m4v" -> videos

@@ -105,7 +105,7 @@ private fun DrawScope.drawFolderHeader(tile: RenderTile, measurer: TextMeasurer,
     val maxW = tile.w - 2 * pad
     if (maxW < 8f * density) return
     val bandDp = band / density
-    val fontSp = (bandDp * 0.5f).coerceIn(10f, 14f)
+    val fontSp = (bandDp * 0.5f).coerceIn(9f, 14f)
     val nameStyle = TextStyle(color = Color(0xFF1A1A1A), fontSize = fontSp.sp, fontWeight = FontWeight.SemiBold)
 
     val name = tile.node?.name ?: "petits fichiers"
